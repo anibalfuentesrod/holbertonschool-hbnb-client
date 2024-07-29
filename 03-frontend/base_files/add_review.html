@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Review</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="icon.png" type="image/png">
+</head>
+<body>
+    <header>
+        <nav>
+            <img src="logo.png" class="logo" alt="Application Logo">
+            <a href="index.html" class="login-button">Home</a>
+            <a href="login.html" class="login-button">Login</a>
+        </nav>
+    </header>
+    <main>
+        <form id="review-form">
+            <h2>Add a Review</h2>
+            <label for="place">Place:</label>
+            <input type="text" id="place" name="place" readonly>
+            
+            <label for="review">Review:</label>
+            <textarea id="review" name="review" required></textarea>
+            
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+    <footer>
+        <p>All rights reserved.</p>
+    </footer>
+    <script src="scripts.js"></script>
+</body>
+</html>
