@@ -1,9 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_cors import CORS
 import json
 from uuid import uuid4
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS
 app.config.from_object('config.Config')
 
 jwt = JWTManager(app)
@@ -16,6 +18,22 @@ with open('data/places.json') as f:
 
 # In-memory storage for new reviews
 new_reviews = []
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/login.html')
+def login_page():
+    return render_template('login.html')
+
+@app.route('/place.html')
+def place_page():
+    return render_template('place.html')
+
+@app.route('/add_review.html')
+def add_review_page():
+    return render_template('add_review.html')
 
 @app.route('/login', methods=['POST'])
 def login():
