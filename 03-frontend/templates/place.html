@@ -37,5 +37,26 @@
         <p>All rights reserved.</p>
     </footer>
     <script src="static/scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const placeId = getPlaceIdFromURL();
+            const reviewForm = document.getElementById('review-form');
+
+            if (placeId) {
+                fetchPlaceDetails(getCookie('token'), placeId);
+
+                reviewForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+                    const reviewText = document.getElementById('review-text').value;
+                    await submitReview(getCookie('token'), placeId, reviewText);
+                });
+            }
+        });
+
+        function getPlaceIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('place_id');
+        }
+    </script>
 </body>
 </html>

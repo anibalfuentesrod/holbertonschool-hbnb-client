@@ -98,27 +98,35 @@ def get_place(place_id):
         "amenities": place['amenities'],
         "reviews": place['reviews'] + [r for r in new_reviews if r['place_id'] == place_id]
     }
+    print(f"Returning place details: {response}")
     return jsonify(response)
 
-@app.route('/places/<place_id>/reviews', methods=['POST'])
+@app.route('/api/reviews', methods=['POST'])
 @jwt_required()
-def add_review(place_id):
-    current_user_id = get_jwt_identity()
-    user = next((u for u in users if u['id'] == current_user_id), None)
+def add_review():
+    data = request.get_json()
+    place_id = data.get('place_id')
+    text = data.get('text')
+    user_id = get_jwt_identity()
+
+    print(f"Received place_id: {place_id}, text: {text}")
+
+    user = next((u for u in users if u['id'] == user_id), None)
 
     if not user:
         return jsonify({"msg": "User not found"}), 404
 
-    review_text = request.json.get('review')
     new_review = {
         "user_name": user['name'],
-        "rating": request.json.get('rating'),
-        "comment": review_text,
+        "rating": data.get('rating'),
+        "comment": text,
         "place_id": place_id
     }
 
     new_reviews.append(new_review)
-    return jsonify({"msg": "Review added"}), 201
+    print(f"New review added: {new_review}")
+
+    return jsonify({"msg": "Review added successfully"}), 201
 
 if __name__ == '__main__':
     app.run(debug=True)

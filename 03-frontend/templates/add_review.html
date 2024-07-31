@@ -22,7 +22,7 @@
             <input type="text" id="place" name="place" readonly>
             
             <label for="review">Review:</label>
-            <textarea id="review" name="review" required></textarea>
+            <textarea id="review-text" name="review" required></textarea>
             
             <button type="submit">Submit</button>
         </form>
@@ -31,5 +31,27 @@
         <p>All rights reserved.</p>
     </footer>
     <script src="static/scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const placeId = getPlaceIdFromURL();
+            const placeInput = document.getElementById('place');
+
+            // Fetch the place details to fill the place input
+            async function fetchPlaceDetailsForForm() {
+                const token = getCookie('token');
+                const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+                const response = await fetch(`http://127.0.0.1:5000/places/${placeId}`, { headers });
+
+                if (response.ok) {
+                    const place = await response.json();
+                    placeInput.value = `${place.name} (${place.city_name}, ${place.country_name})`;
+                } else {
+                    console.error('Failed to fetch place details:', response.statusText);
+                }
+            }
+
+            fetchPlaceDetailsForForm();
+        });
+    </script>
 </body>
 </html>

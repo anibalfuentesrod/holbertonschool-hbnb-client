@@ -38,7 +38,55 @@ document.addEventListener('DOMContentLoaded', () => {
         const placeId = getPlaceIdFromURL();
         checkAuthenticationForPlaceDetails(placeId);
     }
+
+    // Add event listener for the review form
+    if (window.location.pathname.includes('add_review.html')) {
+        const reviewForm = document.getElementById('review-form');
+        const token = checkAuthentication();
+        const placeId = getPlaceIdFromURL();
+
+        if (reviewForm) {
+            reviewForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const reviewText = document.getElementById('review-text').value;
+                await submitReview(token, placeId, reviewText);
+            });
+        }
+    }
 });
+
+async function submitReview(token, placeId, reviewText) {
+    try {
+        const response = await fetch(`http://127.0.0.1:5000/api/reviews`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ place_id: placeId, text: reviewText })
+        });
+        handleResponse(response);
+    } catch (error) {
+        alert('Failed to submit review');
+    }
+}
+
+function handleResponse(response) {
+    if (response.ok) {
+        alert('Review submitted successfully!');
+        document.getElementById('review-form').reset();
+        // Optionally, redirect to the place details page to see the new review
+        const placeId = getPlaceIdFromURL();
+        window.location.href = `place.html?place_id=${placeId}`;
+    } else {
+        alert('Failed to submit review');
+    }
+}
+
+function getPlaceIdFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('place_id');
+}
 
 async function loginUser(email, password) {
     const response = await fetch('http://127.0.0.1:5000/login', {
@@ -86,6 +134,7 @@ function checkAuthentication() {
         if (logoutLink) logoutLink.style.display = 'block';
         fetchPlaces(token);
     }
+    return token;
 }
 
 async function fetchPlaces(token) {
@@ -162,13 +211,6 @@ function filterPlaces(selectedCountry) {
 function logoutUser() {
     document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     window.location.href = 'login.html';
-}
-
-// Functions for place details page
-
-function getPlaceIdFromURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('place_id');
 }
 
 function checkAuthenticationForPlaceDetails(placeId) {
