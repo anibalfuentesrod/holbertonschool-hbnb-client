@@ -30,7 +30,8 @@ nav {
     align-items: center;
 }
 
-.login-button {
+/* Aqui se le da ese color unico, y no el raro ese bien feo */
+.login-button, .home-button, .logout-button {
     text-decoration: none;
     color: #333;
     font-weight: bold;
